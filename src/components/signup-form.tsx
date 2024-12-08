@@ -15,31 +15,49 @@ import React from "react";
 
 interface FormDataProps {
   formData: {
+    name: string;
     email: string;
     password: string;
+    confirmPassword: string;
   };
   setFormData: React.Dispatch<React.SetStateAction<{
+    name: string;
     email: string;
     password: string;
+    confirmPassword: string;
   }>>;
-  handleSubmit: (e: React.FormEvent) => Promise<void>;
+  handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
 }
 
 
-export function LoginForm(
+export function SignupForm(
     {formData, setFormData, handleSubmit}: FormDataProps,
 ) {
   return (
     <Card className="mx-auto max-w-sm">
       <CardHeader>
-        <CardTitle className="text-2xl">Login</CardTitle>
+        <CardTitle className="text-2xl">Create an account</CardTitle>
         <CardDescription>
-          Enter your email below to login to your account
+          Enter your email below to create your account
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit}>
           <div className="grid gap-4">
+            <div className="grid gap-2">
+              <Label htmlFor="name">Name</Label>
+              <Input
+                  id="name"
+                  type="name"
+                  placeholder="John Smith"
+                  required
+                  value={formData.name}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData(prev => ({
+                    ...prev,
+                    name: e.target.value,
+                  }))}
+              />
+            </div>
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -55,12 +73,7 @@ export function LoginForm(
               />
             </div>
             <div className="grid gap-2">
-              <div className="flex items-center">
-                <Label htmlFor="password">Password</Label>
-                <Link href="#" className="ml-auto inline-block text-sm underline">
-                  Forgot your password?
-                </Link>
-              </div>
+              <Label htmlFor="password">Password</Label>
               <Input
                   id="password"
                   type="password"
@@ -72,8 +85,21 @@ export function LoginForm(
                   }))}
               />
             </div>
+            <div className="grid gap-2">
+              <Label htmlFor="password">Confirm Password</Label>
+              <Input
+                  id="confirm-password"
+                  type="password"
+                  required
+                  value={formData.confirmPassword}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData(prev => ({
+                    ...prev,
+                    confirmPassword: e.target.value,
+                  }))}
+              />
+            </div>
             <Button type="submit" className="w-full">
-              Login
+              Signup
             </Button>
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
@@ -98,9 +124,9 @@ export function LoginForm(
           </div>
         </form>
         <div className="mt-4 text-center text-sm">
-          Don&apos;t have an account?{" "}
-          <Link href="/auth/signup" className="underline">
-            Sign up
+          Already have an account?{" "}
+          <Link href="/auth/login" className="underline">
+            Log In
           </Link>
         </div>
       </CardContent>
