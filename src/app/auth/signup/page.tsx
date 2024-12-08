@@ -3,6 +3,9 @@
 import Link from "next/link";
 import React, {useState} from "react";
 import {SignupForm} from "@/components/signup-form";
+import {useToast} from "@/hooks/use-toast";
+import axios from "axios";
+import {useRouter} from "next/navigation";
 
 export default function SignupPage() {
     const [formData, setFormData] = useState({
@@ -12,7 +15,50 @@ export default function SignupPage() {
         confirmPassword: "",
     })
 
+    const { toast } = useToast();
+
+    const router = useRouter();
+
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (formData.password != formData.confirmPassword) {
+            toast({
+                variant: "destructive",
+                title: "Uh oh! Passwords do not match.",
+                description: "Please enter the same password while confirming",
+            });
+            return;
+        }
+
+        try {
+            const response = await axios.post("/api/auth/signup", formData);
+            console.log(response);
+            
+            toast({
+                title: "Sign up successful!",
+                description: "User has been registered with the system.",
+            })
+
+            router.push("/auth/login");
+        }
+        catch (error: unknown) {
+            if (error instanceof SyntaxError) {
+                toast({
+                    variant: "destructive",
+                    title: "Something went wrong",
+                    description: error.message,
+                })
+                console.log(error.message + "From the instanceof");
+            }
+            else {
+                toast({
+                    variant: "destructive",
+                    title: "Something went wrong",
+                    description: String(error),
+                })
+                console.log(String(error));
+            }
+        }
     }
 
     return(
