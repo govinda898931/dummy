@@ -1,15 +1,13 @@
 import {connect} from "@/dbConfig/dbConfig";
 import {NextRequest, NextResponse} from "next/server";
 import User from "@/models/User";
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-expect-error
 import bcryptjs from 'bcryptjs';
 
 
 export async function POST (request: NextRequest) {
     try {
-        const reqBody = await request.json()
-        const {name, email, password} = reqBody
+        const reqBody = await request.json();
+        const {name, email, password} = reqBody;
 
         console.log(reqBody);
 
