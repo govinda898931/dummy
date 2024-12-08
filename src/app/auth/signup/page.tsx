@@ -39,16 +39,41 @@ export default function SignupPage() {
                 description: "User has been registered with the system.",
             })
 
-            router.push("/auth/login");
+            try {
+                const respBody = await axios.post("/api/auth/login", formData);
+                console.log(respBody);
+
+                toast({
+                    title: "Login Success",
+                    description: "User was successfully logged in the System after registering",
+                })
+
+                router.push("/application/dashboard")
+            }
+            catch (error: unknown) {
+                if (error instanceof Error) {
+                    toast({
+                        variant: "destructive",
+                        title: "Something went wrong",
+                        description: error.message,
+                    })
+                }
+                else {
+                    toast({
+                        variant: "destructive",
+                        title: "Something went wrong",
+                        description: String(error),
+                    })
+                }
+            }
         }
         catch (error: unknown) {
-            if (error instanceof SyntaxError) {
+            if (error instanceof Error) {
                 toast({
                     variant: "destructive",
                     title: "Something went wrong",
                     description: error.message,
                 })
-                console.log(error.message + "From the instanceof");
             }
             else {
                 toast({
@@ -56,7 +81,6 @@ export default function SignupPage() {
                     title: "Something went wrong",
                     description: String(error),
                 })
-                console.log(String(error));
             }
         }
     }

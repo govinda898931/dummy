@@ -1,9 +1,11 @@
 "use client";
 
-import React, {useState} from "react";
-import {signIn} from "next-auth/react";
+import React, {useState} from "react";;
 import Link from "next/link";
 import {LoginForm} from "@/components/login-form";
+import {useToast} from "@/hooks/use-toast";
+import axios from "axios";
+import {useRouter} from "next/navigation";
 
 export default function LoginPage() {
     const [formData, setFormData] = useState({
@@ -11,13 +13,40 @@ export default function LoginPage() {
         password: "",
     });
 
+    const { toast } = useToast();
+
+    const router = useRouter();
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        await signIn("credentials", {
-            email: formData.email,
-            password: formData.password,
-            callbackUrl: "/application/dashboard",
-        });
+
+        try {
+            const response = await axios.post("/api/auth/login", formData);
+            console.log(response);
+
+            toast({
+                title: "Login Success",
+                description: "User has been successfully logged in the System.",
+            })
+
+            router.push("/application/dashboard");
+        }
+        catch (error: unknown) {
+            if (error instanceof Error) {
+                toast({
+                    variant: "destructive",
+                    title: "Something went wrong",
+                    description: error.message,
+                })
+            }
+            else {
+                toast({
+                    variant: "destructive",
+                    title: "Something went wrong",
+                    description: String(error),
+                })
+            }
+        }
     };
 
     return(
